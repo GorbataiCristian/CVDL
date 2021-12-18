@@ -1,8 +1,8 @@
 import os
+import cv2
+import numpy as np
 
-script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
-from PIL import Images
-
+SCRIPT_DIR = os.path.dirname(__file__)  # <-- absolute dir the script is in
 RANDOM_IMAGES_RELATIVE_PATH = "/randoms/dataset_random"
 VEHICLE_IMAGES_RELATIVE_PATH = "/cars"
 
@@ -19,34 +19,41 @@ class Images:
     def KFold(self, n_splits, shuffle=False):
         pass
 
-    def load_all_random_images(self):
+    def load_random_images(self, limit):
+        print('Started loading the random images')
         self.other_images = []
-        relative_path = script_dir + RANDOM_IMAGES_RELATIVE_PATH
+        relative_path = SCRIPT_DIR + RANDOM_IMAGES_RELATIVE_PATH
         for image_name in os.listdir(relative_path):
+            if limit == 0:
+                return
             if image_name.endswith(".jpg") or image_name.endswith(".png"):
-                self.other_images.append(load_random_image(relative_path, image_name))
+                self.other_images.append(Images.load_image(relative_path, image_name))
+                limit -= 1
+        print('Finished loading the random images')
 
-    def load_all_vehicle_images(self):
+    def load_vehicle_images(self, limit):
+        print('Started loading the vehicle images')
         self.vehicle_images = []
-        relative_path = script_dir + VEHICLE_IMAGES_RELATIVE_PATH
+        relative_path = SCRIPT_DIR + VEHICLE_IMAGES_RELATIVE_PATH
         for image_name in os.listdir(relative_path):
+            if limit == 0:
+                return
             if image_name.endswith(".jpg") or image_name.endswith(".png"):
-                self.vehicle_images.append(load_random_image(relative_path, image_name))
+                img = Images.load_image(relative_path, image_name)
+                self.vehicle_images.append(img)
+                limit -= 1
 
     @staticmethod
     def load_image(relative_path, image_name):
         rel_path = relative_path + "/" + image_name
-        img = Image.open(rel_path)
-        return img
+        return cv2.imread(rel_path, 0)
 
 
 def main():
+    images_limit = 1000
     images = Images()
-    images.load_all_vehicle_images()
-    images.load_all_random_images()
-
-    print(len(images.vehicle_images))
-    print(len(images.other_images))
+    images.load_vehicle_images(images_limit)
+    images.load_random_images(images_limit)
 
 
 # Press the green button in the gutter to run the script.
