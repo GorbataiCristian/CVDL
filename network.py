@@ -1,5 +1,3 @@
-import math
-
 from images import get_images
 import torch
 import torch.nn as nn
@@ -64,11 +62,11 @@ class SimpleNet(nn.Module):
                                  self.unit7, self.pool2, self.unit8, self.unit9, self.unit10, self.unit11, self.pool3,
                                  self.unit12, self.unit13, self.unit14, self.avg_pool)
 
-        self.fc = nn.Linear(in_features=16*64, out_features=2)
+        self.fc = nn.Linear(in_features=16 * 64, out_features=2)
 
     def forward(self, tensor_input):
         output = self.net(tensor_input)
-        output = output.view(-1, 16*64)
+        output = output.view(-1, 16 * 64)
         output = self.fc(output)
         return output
 
@@ -227,9 +225,14 @@ if __name__ == "__main__":
     loss_fn = nn.CrossEntropyLoss()
 
     all_images = get_images()
-    mapped_images = [(image, 0) for image in all_images.vehicle_images] + [(image, 1) for image in
-                                                                           all_images.other_images]
-    train_images, test_images = random_subset(mapped_images, .8)
+    cars = [(image, 0) for image in all_images.vehicle_images]
+    randoms = [(image, 1) for image in all_images.other_images]
+
+    train_cars, test_cars = random_subset(cars, .8)
+    train_randoms, test_randoms = random_subset(randoms, .8)
+
+    train_images = train_cars + train_randoms
+    test_images = test_cars + test_randoms
 
     # train_set = image_classifier
     train_set = ImageClassifierDataset(
