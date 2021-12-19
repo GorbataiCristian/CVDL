@@ -1,10 +1,10 @@
 import os
 import cv2
-import numpy as np
+
 
 SCRIPT_DIR = os.path.dirname(__file__)  # <-- absolute dir the script is in
-RANDOM_IMAGES_RELATIVE_PATH = "/randoms/dataset_random"
-VEHICLE_IMAGES_RELATIVE_PATH = "/cars"
+RANDOM_IMAGES_RELATIVE_PATH = r"\randoms\dataset_random"
+VEHICLE_IMAGES_RELATIVE_PATH = r"\cars"
 
 
 class Images:
@@ -45,17 +45,17 @@ class Images:
 
     @staticmethod
     def load_image(relative_path, image_name):
-        rel_path = relative_path + "/" + image_name
-        return cv2.imread(rel_path, 0)
+        rel_path = relative_path + "\\" + image_name
+        return cv2.imread(rel_path)
 
 
-def main():
-    images_limit = 1000
+def get_images():
+    images_limit = 75
     images = Images()
     images.load_vehicle_images(images_limit)
     images.load_random_images(images_limit)
+    return images
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    main()
+    images = get_images()
