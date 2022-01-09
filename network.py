@@ -1,14 +1,15 @@
-import cv2
+import random
 
-from images import get_images
 import torch
 import torch.nn as nn
-from torchvision.transforms import transforms
-from torch.utils.data import DataLoader
-from torch.optim import Adam
 from torch.autograd import Variable
+from torch.optim import Adam
+from torch.utils.data import DataLoader
+from torchvision.transforms import transforms
+
 from constants import *
 from dataset import ImageClassifierDataset
+from images import get_images
 from utils import random_subset
 
 
@@ -236,7 +237,29 @@ def main():
         print(f'{prediction} numero {i}')
 
 
+def eval_random_image(all_images):
+    is_vehicle = (random.randint(0, 1) == 0)
+    random_image = None
+    if is_vehicle:
+        random_image = random.choice(all_images.vehicle_images)
+    else:
+        random_image = random.choice(all_images.vehicle_images)
+
+    # model
+    model.load_state_dict(torch.load("cifar10model_10.model"))
+    model.eval()
+    outputs = model(random_image)
+    # prediction = prediction.cpu().numpy()
+    _, prediction = torch.max(outputs.data, 1)
+    cv2.imshow(f'predicted: {"vehicle" if prediction == 0 else "non-vehicle"}, '
+               f'real: {"vehicle" if is_vehicle == True else "non-vehicle"}',
+               random_image)
+    cv2.waitKey(0)
+
+
 if __name__ == "__main__":
+    all_images = get_images()
+
     main()
     # Define transformations for the training set, flip the images randomly, crop out and apply mean and std normalization
     train_transformations = transforms.Compose([
@@ -266,7 +289,6 @@ if __name__ == "__main__":
     optimizer = Adam(model.parameters(), lr=0.01, weight_decay=0.001)
     loss_fn = nn.CrossEntropyLoss()
 
-    all_images = get_images()
     cars = [(image, 0) for image in all_images.vehicle_images]
     randoms = [(image, 1) for image in all_images.other_images]
 
