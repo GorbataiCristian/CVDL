@@ -1,3 +1,5 @@
+import cv2
+
 from images import get_images
 import torch
 import torch.nn as nn
@@ -195,7 +197,47 @@ def train(num_epochs, train_loader, test_loader):
             f"Epoch {epoch: <3}, Train Accuracy: {train_acc: <20}, TrainLoss: {train_loss: <20}, Test Accuracy: {accuracy: <20}, Test Precision: {precision: <20}, Test Recall: {recall: <20}")
 
 
+def main():
+    test_transformations = transforms.Compose([
+        transforms.Resize(PIC_SIZE),
+        transforms.CenterCrop(PIC_SIZE),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ])
+
+    all_images = get_images()
+    cars = [(image, 0) for image in all_images.vehicle_images[10:60]]
+    randoms = [(image, 1) for image in all_images.other_images[10:60]]
+
+    # for image in all_images.other_images[:10]:
+    #     cv2.imshow('image', image)
+    #     cv2.waitKey(0)
+    # train_set = image_classifier
+    train_set = ImageClassifierDataset(
+        cars + randoms,
+        [0, 1],
+        test_transformations
+    )
+
+    # Create a loader for the training set
+    train_dl = DataLoader(train_set, batch_size=50, shuffle=False, num_workers=4)
+
+    model = SimpleNet()
+    model.load_state_dict(torch.load("cifar10model_10.model"))
+    model.eval()
+
+    print('\nMARE SCANDAL\n')
+
+    for i, (images, labels) in enumerate(train_dl):
+        # Predict classes using images from the test set
+        outputs = model(images)
+        # prediction = prediction.cpu().numpy()
+        _, prediction = torch.max(outputs.data, 1)
+        print(f'{prediction} numero {i}')
+
+
 if __name__ == "__main__":
+    main()
     # Define transformations for the training set, flip the images randomly, crop out and apply mean and std normalization
     train_transformations = transforms.Compose([
         transforms.Resize(PIC_SIZE),
