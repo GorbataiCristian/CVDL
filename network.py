@@ -426,7 +426,7 @@ def predict_random_image(img):
 def welp(imgs):
     # LOADING THE MODEL
     our_model = SimpleNet()
-    our_model.load_state_dict(torch.load("cooler_model.model"))
+    our_model.load_state_dict(torch.load("order_66.model"))
     our_model.eval()
 
     # LOADING THE DATA FROM [images]

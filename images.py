@@ -22,7 +22,7 @@ class Images:
         print('Started loading the random images')
         self.other_images = []
         relative_path = SCRIPT_DIR + RANDOM_IMAGES_RELATIVE_PATH
-        start_at = 200
+        start_at = 250
         index = 0
         for image_name in os.listdir(relative_path):
             if start_at > index:
@@ -39,7 +39,7 @@ class Images:
         print('Started loading the vehicle images')
         self.vehicle_images = []
         relative_path = SCRIPT_DIR + VEHICLE_IMAGES_RELATIVE_PATH
-        start_at = 200
+        start_at = 1000
         index = 0
         for image_name in os.listdir(relative_path):
             if start_at > index:
