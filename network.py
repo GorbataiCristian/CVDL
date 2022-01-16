@@ -51,7 +51,6 @@ class SimpleNet(nn.Module):
         self.unit1 = Unit(in_channels=3, out_channels=PIC_SIZE)
         self.unit2 = Unit(in_channels=PIC_SIZE, out_channels=PIC_SIZE)
         self.unit3 = Unit(in_channels=PIC_SIZE, out_channels=PIC_SIZE)
-        self.unit3_5 = Unit(in_channels=PIC_SIZE, out_channels=PIC_SIZE)
 
         self.pool1 = nn.MaxPool2d(kernel_size=2)
 
@@ -59,7 +58,6 @@ class SimpleNet(nn.Module):
         self.unit5 = Unit(in_channels=PIC_SIZE * 2, out_channels=PIC_SIZE * 2)
         self.unit6 = Unit(in_channels=PIC_SIZE * 2, out_channels=PIC_SIZE * 2)
         self.unit7 = Unit(in_channels=PIC_SIZE * 2, out_channels=PIC_SIZE * 2)
-        self.unit7_5 = Unit(in_channels=PIC_SIZE * 2, out_channels=PIC_SIZE * 2)
 
         self.pool2 = nn.MaxPool2d(kernel_size=2)
 
@@ -67,29 +65,25 @@ class SimpleNet(nn.Module):
         self.unit9 = Unit(in_channels=PIC_SIZE * 4, out_channels=PIC_SIZE * 4)
         self.unit10 = Unit(in_channels=PIC_SIZE * 4, out_channels=PIC_SIZE * 4)
         self.unit11 = Unit(in_channels=PIC_SIZE * 4, out_channels=PIC_SIZE * 4)
-        self.unit11_5 = Unit(in_channels=PIC_SIZE * 4, out_channels=PIC_SIZE * 4)
 
         self.pool3 = nn.MaxPool2d(kernel_size=2)
 
         self.unit12 = Unit(in_channels=PIC_SIZE * 4, out_channels=PIC_SIZE * 4)
         self.unit13 = Unit(in_channels=PIC_SIZE * 4, out_channels=PIC_SIZE * 4)
         self.unit14 = Unit(in_channels=PIC_SIZE * 4, out_channels=PIC_SIZE * 4)
-        self.unit14_5 = Unit(in_channels=PIC_SIZE * 4, out_channels=PIC_SIZE * 4)
 
         self.avg_pool = nn.AvgPool2d(kernel_size=4)
 
         # Add all the units into the Sequential layer in exact order
-        self.net = nn.Sequential(self.unit1, self.unit2, self.unit3, self.unit3_5, self.pool1, self.unit4, self.unit5,
-                                 self.unit6,
-                                 self.unit7, self.unit7_5, self.pool2, self.unit8, self.unit9, self.unit10, self.unit11, self.unit11_5,
-                                 self.pool3,
-                                 self.unit12, self.unit13, self.unit14, self.unit14_5, self.avg_pool)
+        self.net = nn.Sequential(self.unit1, self.unit2, self.unit3, self.pool1, self.unit4, self.unit5, self.unit6,
+                                 self.unit7, self.pool2, self.unit8, self.unit9, self.unit10, self.unit11, self.pool3,
+                                 self.unit12, self.unit13, self.unit14, self.avg_pool)
 
-        self.fc = nn.Linear(in_features=16 * 64 * 8, out_features=2)
+        self.fc = nn.Linear(in_features=16 * 64, out_features=2)
 
     def forward(self, tensor_input):
         output = self.net(tensor_input)
-        output = output.view(-1, 16 * 64 * 8)
+        output = output.view(-1, 16 * 64)
         output = self.fc(output)
         return output
 
@@ -520,13 +514,12 @@ if __name__ == "__main__":
     #     else:
     #         abc(all_images)
     #
-    # welp(all_images)
+    welp(all_images)
 
     # main()
     # Define transformations for the training set, flip the images randomly, crop out and apply mean and std normalization
     train_transformations = transforms.Compose([
         transforms.Resize(PIC_SIZE),
-        transforms.RandomHorizontalFlip(),
         transforms.RandomCrop(PIC_SIZE, padding=4),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
