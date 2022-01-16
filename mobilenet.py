@@ -1,7 +1,8 @@
+import cv2
 import numpy as np
-from keras.applications.mobilenet_v2  import MobileNetV2, preprocess_input, decode_predictions
-from imageio import imread
+from keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input, decode_predictions
 from PIL import Image
+
 # from resizeimage  import resizeimage
 
 # model = MobileNetV2(weights="imagenet")
@@ -25,10 +26,14 @@ from PIL import Image
 #
 # for name, desc, score in decode_predictions(predict, top=20)[0]:
 #   print(f' {desc}, -- {score}')
+from images import get_images
 
 model = MobileNetV2(weights="imagenet")
 size = (224, 224)
-valid_classes = ["minivan", "limousine", "cab", "minibus", "pickup", "sports_car", "tow_truck", "convertible", "moving_van", "police_van", "jeep", "ambulance"]
+valid_classes = ["minivan", "limousine", "cab", "minibus", "pickup", "sports_car", "tow_truck", "convertible",
+                 "moving_van", "police_van", "jeep", "ambulance", "beach_wagon"]
+
+
 def mobile_net_v2_predict(img):
     img = img.resize(size)
     data = np.empty((1, 224, 224, 3))
@@ -36,8 +41,23 @@ def mobile_net_v2_predict(img):
     data = preprocess_input(data)
     predict = model.predict(data)
 
-    print(decode_predictions(predict, top=1)[0])
-    if decode_predictions(predict, top=1)[0] in valid_classes:
-        return True
+    prd = decode_predictions(predict, top=1)[0][0][1]
+    if prd in valid_classes:
+        return True, prd
 
-    return False
+    return False, prd
+
+
+# images = get_images(1000)
+# results = []
+# positives = 0
+# for image in images.vehicle_images:
+#     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+#     im_pil = Image.fromarray(image)
+#     res = mobile_net_v2_predict(im_pil)
+#     results.append(res)
+#     if res[0]:
+#         positives += 1
+#     # else:
+#     #     cv2.imshow('image', image)
+#     #     cv2.waitKey(0)

@@ -49,8 +49,7 @@ class Images:
         return cv2.imread(rel_path)
 
 
-def get_images():
-    images_limit = 75
+def get_images(images_limit: int):
     images = Images()
     images.load_vehicle_images(images_limit)
     images.load_random_images(images_limit)
@@ -58,4 +57,4 @@ def get_images():
 
 
 if __name__ == '__main__':
-    images = get_images()
+    images = get_images(75)
