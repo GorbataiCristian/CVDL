@@ -1,7 +1,6 @@
 import os
 import cv2
 
-
 SCRIPT_DIR = os.path.dirname(__file__)  # <-- absolute dir the script is in
 RANDOM_IMAGES_RELATIVE_PATH = r"\randoms\dataset_random"
 VEHICLE_IMAGES_RELATIVE_PATH = r"\cars"
@@ -23,7 +22,12 @@ class Images:
         print('Started loading the random images')
         self.other_images = []
         relative_path = SCRIPT_DIR + RANDOM_IMAGES_RELATIVE_PATH
+        start_at = 200
+        index = 0
         for image_name in os.listdir(relative_path):
+            if start_at > index:
+                index += 1
+                continue
             if limit == 0:
                 return
             if image_name.endswith(".jpg") or image_name.endswith(".png"):
@@ -35,7 +39,12 @@ class Images:
         print('Started loading the vehicle images')
         self.vehicle_images = []
         relative_path = SCRIPT_DIR + VEHICLE_IMAGES_RELATIVE_PATH
+        start_at = 200
+        index = 0
         for image_name in os.listdir(relative_path):
+            if start_at > index:
+                index += 1
+                continue
             if limit == 0:
                 return
             if image_name.endswith(".jpg") or image_name.endswith(".png"):
@@ -49,8 +58,7 @@ class Images:
         return cv2.imread(rel_path)
 
 
-def get_images():
-    images_limit = 75
+def get_images(images_limit: int):
     images = Images()
     images.load_vehicle_images(images_limit)
     images.load_random_images(images_limit)
@@ -58,4 +66,4 @@ def get_images():
 
 
 if __name__ == '__main__':
-    images = get_images()
+    images = get_images(75)

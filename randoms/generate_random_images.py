@@ -7,7 +7,7 @@ name = "random"
 def request_image(imageId):
     response = requests.get("https://picsum.photos/400")
 
-    with open(f'dataset_random/{name}_{imageId}.png', 'wb') as file:
+    with open(f'dataset_random\\{name}_{imageId}.png', 'wb') as file:
         file.write(response.content)
 
     print(f'Done: {imageId}')
